@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <title>Birthdays</title>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Birthdays</h1>
+    </div>
+    <div class="container">
+        <div class="section">
+            <div class="error_message">
+                {{ message }}
+            </div>
+            <h2>Add a Birthday</h2>
+
+            <input type="text" placeholder="name" id="name" autocomplete="off" for="name" autofocus></input>
+            <input type="number" placeholder="month" id="month" max="12" min="1" autocomplete="off" for="month"></input>
+            <input type="number" for="day" placeholder="day" id="day" max="31" min="1" autocomplete="off"></input>
+            <button id="submit" value="Add Birthday">Add</button>
+            <button id="clear" value="clear all" onclick="clearAllVal()">Clear All</button>
+
+
+            <!-- TODO: Create a form for users to submit a name, a month, and a day -->
+        </div>
+
+        <div class="section">
+
+            <h2>All Birthdays</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sr no</th>
+                        <th>Name</th>
+                        <th>Birthday</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <!-- TODO: Loop through the database entries to display them in this table-->
+
+                <tbody id="tableBody">
+                    <!-- 
+                    <tr>
+                        <td>1</td>
+                        <td class="nameData"></td>
+                        <td class="birthData"></td>
+                        <td><button id="Delete" value="Delete Birthday">Delete</button>
+                        </td>
+                    </tr> -->
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let addBirth = document.getElementById("submit");
+
+        function getAndAdd() {
+            let name = document.getElementById("name").value;
+            let month = document.getElementById("month").value;
+            let day = document.getElementById("day").value;
+            let birthdays = localStorage.getItem("birthdays");
+            if (birthdays == null) {
+                birthdaysList = [];
+                birthdaysList.push([name, month]);
+                localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+            } else {
+                birthdaysListStr = localStorage.getItem("birthdays");
+                birthdaysList = JSON.parse(birthdaysListStr);
+                birthdaysList.push([name, month]);
+                localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+            }
+
+            add();
+        }
+
+        function add() {
+            console.log("button cicked");
+            birthdays = localStorage.getItem("birthdays");
+
+
+            if (birthdays == null) {
+                birthdaysList = [];
+                // birthdaysList.push([name, month]);
+                localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+            } else {
+                birthdaysListStr = localStorage.getItem("birthdays");
+                birthdaysList = JSON.parse(birthdaysListStr);
+            }
+            let name = document.getElementById("name").value;
+            let month = document.getElementById("month").value;
+            let day = document.getElementById("day").value;
+            let birthdays = localStorage.getItem("birthdays");
+            if (birthdays == null) {
+                birthdaysList = [];
+                birthdaysList.push([name, month]);
+                localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+            } else {
+                birthdaysListStr = localStorage.getItem("birthdays");
+                birthdaysList = JSON.parse(birthdaysListStr);
+                birthdaysList.push([name, month]);
+                localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+            }
+
+            // Now showing all the data having in the local storage
+
+            tableBody = document.getElementById("tableBody");
+            let str = "";
+            birthdaysList.forEach((element, index) => {
+                str += `
+                      <tr>
+                        <td>${index + 1}</td>
+                        <td>${element[0]}</td>
+                        <td>${element[1]}</td>
+                        <td><button id="Delete" onClick ="deleteVal(${index})" value="Delete Birthday">Delete</button>
+                        </td>
+                    </tr>
+    `;
+            });
+            tableBody.innerHTML = str;
+        }
+
+
+        // pushing the data on clicking
+        addBirth.addEventListener("click", getAndAdd);
+        add();
+
+        function deleteVal(itemInd) {
+            birthdaysListStr = localStorage.getItem("birthdays");
+            birthdaysList = JSON.parse(birthdaysListStr);
+
+            localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+            add();
+        }
+
+        function clearAllVal() {
+            if (confirm("Do you want to proceed? All data will be erases")) {
+                localStorage.clear();
+                add();
+            }
+        }
+
+    </script>
+</body>
+
+</html>
