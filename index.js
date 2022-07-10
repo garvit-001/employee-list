@@ -1,50 +1,73 @@
-// import os
+let addBirth = document.getElementById("submit");
 
-// from cs50 import SQL
-// from flask import Flask, flash, jsonify, redirect, render_template, request, session
+function getAndAdd() {
+  let name = document.getElementById("name").value;
+  let month = document.getElementById("month").value;
+  let day = document.getElementById("day").value;
+  let birthdays = localStorage.getItem("birthdays");
+  if (birthdays == null) {
+    birthdaysList = [];
+    birthdaysList.push([name, month + "/" + day]);
+    localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+  } else {
+    birthdaysListStr = localStorage.getItem("birthdays");
+    birthdaysList = JSON.parse(birthdaysListStr);
+    birthdaysList.push([name, month + "/" + day]);
+    localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+  }
 
-// # Configure application
-// app = Flask(__name__)
+  add();
+}
 
-// # Ensure templates are auto-reloaded
-// app.config["TEMPLATES_AUTO_RELOAD"] = True
+// checking the data
+// if all fields are given by user the push into the database
+function add() {
+  // console.log("button cicked");
+  // birthdays = localStorage.getItem("birthdays");
 
-// # Configure CS50 Library to use SQLite database
-// db = SQL("sqlite:///birthdays.db")
+  if (localStorage.getItem("birthdays") == null) {
+    birthdaysList = [];
+    // birthdaysList.push([name, month]);
+    localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+  } else {
+    birthdaysListStr = localStorage.getItem("birthdays");
+    birthdaysList = JSON.parse(birthdaysListStr);
+  }
 
-// @app.after_request
-// def after_request(response):
-//     """Ensure responses aren't cached"""
-//     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-//     response.headers["Expires"] = 0
-//     response.headers["Pragma"] = "no-cache"
-//     return response
+  tableBody = document.getElementById("tableBody");
+  let str = "";
+  birthdaysList.forEach((element, index) => {
+    str += `
+                      <tr>
+                        <td>${index + 1}</td>
+                        <td>${element[0]}</td>
+                        <td>${element[1]}</td>
+                     <td><button id="Delete" onClick ="deleteVal(${index})" value="Delete Birthday">Delete</button>
+                        
+                        </td>
+                    </tr>
+    `;
+  });
+  tableBody.innerHTML = str;
+}
 
-// @app.route("/", methods=["GET", "POST"])
-// def index():
-//     if request.method == "POST":
-//         message = ""
-//         name = request.form.get("name")
-//         # Birthday = request.form.get("day") + "/" + request.form.get("month")
-//         month =  request.form.get("month")
-//         day =  request.form.get("day")
-//         # TODO: Add the user's entry into the database
-//         if not name:
-//             message = "Missing name"
-//         elif not month:
-//             message = "Missing month"
-//         elif not day:
-//             message = "Missing day"
-//         else:
-//             db.execute("INSERT INTO birthdays (name, month, day) VALUES (? , ? , ?)" , name, month, day)
-//         birthdays = db.execute("SELECT * FROM birthdays")
-//         return render_template("index.html", message=message, birthdays = birthdays)
-//         # return redirect("/")
+// pushing the data on clicking
+addBirth.addEventListener("click", getAndAdd);
+add();
 
-//     else:
+// deleteing a perticular value
+function deleteVal(itemInd) {
+  birthdaysListStr = localStorage.getItem("birthdays");
+  birthdaysList = JSON.parse(birthdaysListStr);
+  birthdaysList.splice(itemInd, 1);
+  localStorage.setItem("birthdays", JSON.stringify(birthdaysList));
+  add();
+}
 
-//         # TODO: Display the entries in the database on index.html
-//         birthdays = db.execute("SELECT * FROM birthdays")
-//         return render_template("index.html" , birthdays = birthdays)
-
-// console.log("welcome");
+// clear all the data
+function clearAllVal() {
+  if (confirm("Do you want to proceed? All data will be erases")) {
+    localStorage.clear();
+    add();
+  }
+}
