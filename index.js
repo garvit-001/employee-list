@@ -2,8 +2,8 @@ let addBirth = document.getElementById("submit");
 
 function getAndAdd() {
   let name = document.getElementById("name").value;
-  let month = document.getElementById("month").value;
-  let day = document.getElementById("day").value;
+  let month = document.getElementById("name").value;
+  let day = document.getElementById("mail").value;
   let birthdays = localStorage.getItem("birthdays");
   if (birthdays == null) {
     birthdaysList = [];
